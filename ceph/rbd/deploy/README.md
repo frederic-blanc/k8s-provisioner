@@ -4,19 +4,22 @@
 
 * [Install without RBAC roles](#install-without-rbac-roles)
 * [Install with RBAC roles](#install-with-rbac-roles)
+ 
+As I have not uploaded the built container anywhere, you must preload it on every nodes of
+your k8s cluster
 
 ## Install without RBAC roles
 
 ```
-cd $GOPATH/src/github.com/kubernetes-incubator/external-storage/ceph/rbd/deploy
+cd  k8s-ceph-provisioner/ceph/rbd/deploy
+sed -i "s/%%ARCH%%/$(uname -m)/g" non-rbac/deployment.yaml
 kubectl apply -f ./non-rbac
 ```
 
 ## Install with RBAC roles
 
 ```
-cd $GOPATH/src/github.com/kubernetes-incubator/external-storage/ceph/rbd/deploy
-NAMESPACE=default # change this if you want to deploy it in another namespace
-sed -r -i "s/namespace: [^ ]+/namespace: $NAMESPACE/g" ./rbac/clusterrolebinding.yaml ./rbac/rolebinding.yaml
-kubectl -n $NAMESPACE apply -f ./rbac
+cd  k8s-ceph-provisioner/ceph/rbd/deploy
+sed -i "s/%%ARCH%%/$(uname -m)/g" rbac/deployment.yaml
+kubectl apply -f ./rbac
 ```

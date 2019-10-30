@@ -12,13 +12,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM centos:7
+# Start from the latest golang base image
+FROM golang:latest as builder
 
-ENV CEPH_VERSION "mimic"
-RUN rpm -Uvh https://download.ceph.com/rpm-$CEPH_VERSION/el7/noarch/ceph-release-1-1.el7.noarch.rpm && \
-  yum install -y epel-release && \
-  yum install -y --nogpgcheck ceph-common && \
-  yum clean all
+# Add Maintainer Info
 
-COPY rbd-provisioner /usr/local/bin/rbd-provisioner
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/github.com/kubernetes-incubator/external-storage/ceph/rbd
+
+ADD . .
+RUN CGO_ENABLED=0 go build -v -a -ldflags '-extldflags "-static"' -o _output/rbd-provisioner ./cmd/rbd-provisioner
+
+FROM debian:buster
+
+RUN apt-get     update          &&  \
+    apt-get     upgrade -y      &&  \
+    apt-get     install -y          \
+                ceph-common     &&  \
+    apt-get     clean   -y      &&  \
+    rm  -rf /var/lib/apt/lists/*    \
+            /var/cache/apt/*
+
+RUN touch   /etc/ceph/ceph.conf
+
+COPY --from=builder /go/src/github.com/kubernetes-incubator/external-storage/ceph/rbd/_output/rbd-provisioner /usr/local/bin/rbd-provisioner
+
 ENTRYPOINT ["/usr/local/bin/rbd-provisioner"]

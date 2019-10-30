@@ -43,7 +43,7 @@ const (
 )
 
 func main() {
-	klog.InitFlags(nil)
+	// klog.InitFlags(nil)
 	flag.Parse()
 	flag.Set("logtostderr", "true")
 

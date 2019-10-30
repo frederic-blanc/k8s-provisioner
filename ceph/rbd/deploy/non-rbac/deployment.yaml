@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: rbd-provisioner
-        image: "quay.io/external_storage/rbd-provisioner:latest"
+        image: "rbd-provisioner-%%ARCH%%:v0.1.2"
         env:
         - name: PROVISIONER_NAME
           value: ceph.com/rbd
