@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: rbd-provisioner
-        image: "k8s-rbd-provisioner:%%ARCH%%-latest"
+        image: "blancfrederic/k8s-rbd-provisioner:latest"
         env:
         - name: PROVISIONER_NAME
           value: ceph.com/rbd

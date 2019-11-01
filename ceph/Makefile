@@ -16,8 +16,6 @@ ifeq ($(REGISTRY),)
 	REGISTRY        = blancfrederic
 endif
 
-ARCH               := $(shell arch)
-
 ifeq ($(VERSION),)
 	VERSION         = latest
 endif
@@ -27,11 +25,11 @@ IMAGE_BUIDLER       = k8s-ceph-provisioner-builder:latest
 IMAGENAME_CEPHS     = k8s-cephfs-provisioner
 IMAGENAME_RBD       = k8s-rbd-provisioner
 
-IMAGE_CEPHS         = $(REGISTRY)/$(IMAGENAME_CEPHS):$(ARCH)-$(VERSION)
-IMAGE_RBD           = $(REGISTRY)/$(IMAGENAME_RBD):$(ARCH)-$(VERSION)
+IMAGE_CEPHS         = $(REGISTRY)/$(IMAGENAME_CEPHS):$(VERSION)
+IMAGE_RBD           = $(REGISTRY)/$(IMAGENAME_RBD):$(VERSION)
 
-MUTABLE_IMAGE_CEPHS = $(REGISTRY)/$(IMAGENAME_CEPHS):$(ARCH)-latest
-MUTABLE_IMAGE_RBD   = $(REGISTRY)/$(IMAGENAME_RBD):$(ARCH)-latest
+MUTABLE_IMAGE_CEPHS = $(REGISTRY)/$(IMAGENAME_CEPHS):latest
+MUTABLE_IMAGE_RBD   = $(REGISTRY)/$(IMAGENAME_RBD):latest
 
 all build:
 	docker  build   -t  $(IMAGE_BUIDLER)        -f Dockerfile.gobuilder .
@@ -45,7 +43,7 @@ quick-container:
 	docker  build   -t  $(MUTABLE_IMAGE_RBD)    -f Dockerfile.rbd       .
 	
 	docker  tag         $(MUTABLE_IMAGE_CEPHS)  $(IMAGE_CEPHS)
-	docker  tag         $(MUTABLE_IMAGE_RBD)    $(IMAGENAME_RBD)
+	docker  tag         $(MUTABLE_IMAGE_RBD)    $(IMAGE_RBD)
 .PHONY: quick-container
 
 push: container

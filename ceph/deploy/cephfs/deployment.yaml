@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: cephfs-provisioner
-        image: "k8s-cephfs-provisioner:%%ARCH%%-latest"
+        image: "blancfrederic/k8s-cephfs-provisioner:latest"
         env:
         - name: PROVISIONER_NAME
           value: ceph.com/cephfs
