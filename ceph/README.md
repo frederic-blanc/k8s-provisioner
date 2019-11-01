@@ -20,10 +20,11 @@ Make the container images and push to the registry
 See [DEPLOY_CEPHFS.md](https://github.com/frederic-blanc/k8s-provisioner/blob/master/ceph/DEPLOY_CEPHFS.md) for cephfs installation, and see [DEPLOY_RBD.md](https://github.com/frederic-blanc/k8s-provisioner/blob/master/ceph/DEPLOY_RBD.md) for rbd 
 
 ## Known limitations
-
-* Kernel CephFS doesn't work with SELinux, setting SELinux label in Pod's securityContext will not work.
-* Kernel CephFS doesn't support quota or capacity, capacity requested by PVC is not enforced or validated.
-* Currently each Ceph user created by the provisioner has `allow r` MDS cap to permit CephFS mount.
+* On CephRBD Persistent Volumes are limited to 4Gi on rpi because of rbd-nbd module usage instead of rbd one
+* CephFS provisioner does nnot work, keep working on it
+* ~~Kernel CephFS doesn't work with SELinux, setting SELinux label in Pod's securityContext will not work.~~
+* ~~Kernel CephFS doesn't support quota or capacity, capacity requested by PVC is not enforced or validated.~~
+* ~~Currently each Ceph user created by the provisioner has `allow r` MDS cap to permit CephFS mount.~~
 
 ## Acknowledgements
 
