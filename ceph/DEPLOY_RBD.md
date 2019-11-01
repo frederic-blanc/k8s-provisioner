@@ -6,44 +6,68 @@
 
 See https://kubernetes.io/.
 
-* Create a Ceph admin secret
+* Create a Ceph pool and client key
 
 ```bash
-ceph auth get client.admin 2>&1 |grep "key = " |awk '{print  $3'} |xargs echo -n > /tmp/key
-kubectl create secret generic ceph-admin-secret --from-file=/tmp/key --namespace=kube-system --type=kubernetes.io/rbd
+ceph    osd pool    delete              kube    kube --yes-i-really-really-mean-it
+ceph    osd pool    create              kube    128
+ceph    osd pool    application enable  kube    rbd
+
+ceph   auth get-or-create client.kube mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=kube' -o /etc/ceph/ceph.client.kube.keyring
 ```
 
-* Create a Ceph pool and a user secret
-
+* Create secrets and StorageClass kubectl file
 ```bash
-ceph osd pool create kube 8 8
-ceph auth add client.kube mon 'allow r' osd 'allow rwx pool=kube'
-ceph auth get-key client.kube > /tmp/key
-kubectl create secret generic ceph-secret --from-file=/tmp/key --namespace=kube-system --type=kubernetes.io/rbd
+cat > deploy/k8s-rbd-storageclass.yaml <<EOF
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-admin-secret
+  namespace: rbd-provisioner
+data:
+  key: $(ceph auth get-key client.admin | base64)
+type: kubernetes.io/rbd
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-user-secret
+  namespace: rbd-provisioner
+data:
+  key: $(ceph auth get-key client.kube  | base64)
+type: kubernetes.io/rbd
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: rbd
+  namespace: rbd-provisioner
+provisioner: ceph.com/rbd
+parameters:
+  monitors: $(ceph mon dump 2>/dev/null | sed -n 's|^[0-9]\+: \(.*\)/.*$|\1|p' | tr -s '\n' ',')
+  pool: kube
+  adminId: admin
+  adminSecretNamespace: rbd-provisioner
+  adminSecretName: ceph-admin-secret
+  userId: kube
+  userSecretNamespace: rbd-provisioner
+  userSecretName: ceph-user-secret
+  imageFormat: "2"
+  imageFeatures: layering
+---
+EOF
 ```
 
 * Install with RBAC roles
 
-```
-sed -i "s/%%ARCH%%/$(uname -m)/g" deploy/rbd/deployment.yaml
-kubectl apply -f deploy/rbd
+```bash
+kubectl apply -f deploy/k8s-rbd-provisioner.yaml
+kubectl apply -f deploy/k8s-rbd-storageclass.yaml
 ```
 
-* Create a RBD Storage Class
-
-Replace Ceph monitor's IP in [examples/rbd/class.yaml](class.yaml) with your own and create storage class:
+* Create a Pod with the claim
 
 ```bash
-kubectl create -f examples/rbd/class.yaml
+kubectl create -f examples/test-rbd-pod.yaml
 ```
-
-* Create a claim
-
-```bash
-kubectl create -f examples/rbd/claim.yaml
-```
-
-* Create a Pod using the claim
-
-```bash
-kubectl create -f examples/rbd/test-pod.yaml

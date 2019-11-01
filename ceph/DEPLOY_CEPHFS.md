@@ -6,37 +6,45 @@
 
 See https://kubernetes.io/.
 
-* Create a Ceph admin secret
+* Create secret and StorageClass kubectl file
 
 ```bash
-ceph auth get-key client.admin > /tmp/secret
-kubectl create ns cephfs
-kubectl create secret generic ceph-secret-admin --from-file=/tmp/secret --namespace=cephfs
+cat > deploy/k8s-cephfs-storageclass.yaml <<EOF
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ceph-admin-secret
+  namespace: cephfs-provisioner
+data:
+  key: $(ceph auth get-key client.admin | base64)
+type: kubernetes.io/rbd
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: cephfs
+  namespace: cephfs-provisioner
+provisioner: ceph.com/cephfs
+parameters:
+    monitors: $(ceph mon dump 2>/dev/null | sed -n 's|^[0-9]\+: \(.*\)/.*$|\1|p' | tr -s '\n' ',')
+    adminId: admin
+    adminSecretName: ceph-admin-secret
+    adminSecretNamespace: "cephfs-provisioner"
+    claimRoot: /pvc-volumes
+---
+EOF
 ```
 
 * Install with RBAC roles
 
-```
-sed -i "s/%%ARCH%%/$(uname -m)/g" deploy/cephfs/deployment.yaml
-kubectl apply -f deploy/cephfs
+```bash
+kubectl apply -f deploy/k8s-cephfs-provisioner.yaml
+kubectl apply -f deploy/k8s-cephfs-storageclass.yaml
 ```
 
-* Create a CephFS Storage Class
-
-Replace Ceph monitor's IP in [examples/cephfs/class.yaml](class.yaml) with your own and create storage class:
+* Create a Pod with the claim
 
 ```bash
-kubectl create -f examples/cephfs/class.yaml
-```
-
-* Create a claim
-
-```bash
-kubectl create -f examples/cephfs/claim.yaml
-```
-
-* Create a Pod using the claim
-
-```bash
-kubectl create -f examples/cephfs/test-pod.yaml
+kubectl create -f examples/test-cephfs-pod.yaml
 ```
