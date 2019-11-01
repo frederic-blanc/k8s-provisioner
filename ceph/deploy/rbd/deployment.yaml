@@ -1,8 +1,11 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: rbd-provisioner
 spec:
+  selector:
+    matchLabels:
+      app: rbd-provisioner
   replicas: 1
   strategy:
     type: Recreate
