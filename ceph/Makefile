@@ -52,7 +52,7 @@ push: container
 	docker  push        $(MUTABLE_IMAGE_CEPHS)
 	docker  push        $(IMAGE_CEPHS)
 	docker  push        $(MUTABLE_IMAGE_RBD)
-	docker  push        $(IMAGENAME_RBD)
+	docker  push        $(IMAGE_RBD)
 .PHONY: push
 
 test:
