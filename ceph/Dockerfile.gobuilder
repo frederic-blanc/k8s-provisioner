@@ -22,5 +22,5 @@ WORKDIR /go/src/github.com/kubernetes-incubator/external-storage/ceph
 
 ADD . .
 
-RUN CGO_ENABLED=0 go build -v -a -ldflags '-extldflags "-static"' -o _output/rbd-provisioner    ./cmd/rbd-provisioner
-RUN CGO_ENABLED=0 go build -v -a -ldflags '-extldflags "-static"' -o _output/cephfs-provisioner ./cmd/cephfs-provisioner
+RUN CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o _output/rbd-provisioner    ./cmd/rbd-provisioner
+RUN CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o _output/cephfs-provisioner ./cmd/cephfs-provisioner

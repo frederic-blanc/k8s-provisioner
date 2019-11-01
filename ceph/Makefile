@@ -13,13 +13,13 @@
 # limitations under the License.
 
 ifeq ($(REGISTRY),)
-    REGISTRY        = blancfrederic
+	REGISTRY        = blancfrederic
 endif
 
-ARCH                = $(uname -m)
+ARCH               := $(shell arch)
 
 ifeq ($(VERSION),)
-    VERSION         = latest
+	VERSION         = latest
 endif
 
 IMAGE_BUIDLER       = k8s-ceph-provisioner-builder:latest
@@ -34,29 +34,29 @@ MUTABLE_IMAGE_CEPHS = $(REGISTRY)/$(IMAGENAME_CEPHS):$(ARCH)-latest
 MUTABLE_IMAGE_RBD   = $(REGISTRY)/$(IMAGENAME_RBD):$(ARCH)-latest
 
 all build:
-    docker  build   -t  $(IMAGE_BUIDLER)        -f Dockerfile.gobuilder .
+	docker  build   -t  $(IMAGE_BUIDLER)        -f Dockerfile.gobuilder .
 .PHONY: all build
 
 container: build quick-container
 .PHONY: container
 
 quick-container:
-    docker  build   -t  $(MUTABLE_IMAGE_CEPHS)  -f Dockerfile.cephfs    .
-    docker  build   -t  $(MUTABLE_IMAGE_RBD)    -f Dockerfile.rbd       .
-    
-    docker  tag         $(MUTABLE_IMAGE_CEPHS)  $(IMAGE_CEPHS)
-    docker  tag         $(MUTABLE_IMAGE_RBD)    $(IMAGENAME_RBD)
+	docker  build   -t  $(MUTABLE_IMAGE_CEPHS)  -f Dockerfile.cephfs    .
+	docker  build   -t  $(MUTABLE_IMAGE_RBD)    -f Dockerfile.rbd       .
+	
+	docker  tag         $(MUTABLE_IMAGE_CEPHS)  $(IMAGE_CEPHS)
+	docker  tag         $(MUTABLE_IMAGE_RBD)    $(IMAGENAME_RBD)
 .PHONY: quick-container
 
 push: container
-    docker  push        $(MUTABLE_IMAGE_CEPHS)
-    docker  push        $(IMAGE_CEPHS)
-    docker  push        $(MUTABLE_IMAGE_RBD)
-    docker  push        $(IMAGENAME_RBD)
+	docker  push        $(MUTABLE_IMAGE_CEPHS)
+	docker  push        $(IMAGE_CEPHS)
+	docker  push        $(MUTABLE_IMAGE_RBD)
+	docker  push        $(IMAGENAME_RBD)
 .PHONY: push
 
 test:
-    go test ./...
+	go test ./...
 .PHONY: test
 
 clean:
