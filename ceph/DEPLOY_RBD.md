@@ -25,7 +25,6 @@ kubectl create secret generic ceph-secret --from-file=/tmp/key --namespace=kube-
 * Install with RBAC roles
 
 ```
-sed -i "s/%%ARCH%%/$(uname -m)/g" deploy/rbd/deployment.yaml
 kubectl apply -f deploy/rbd
 ```
 
