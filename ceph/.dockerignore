@@ -1,0 +1,6 @@
+.git
+deploy
+examples
+*.md
+Dockerfile*
+Makefile
