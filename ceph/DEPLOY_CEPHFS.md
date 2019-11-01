@@ -38,6 +38,23 @@ EOF
 
 * Install with RBAC roles
 
+<<<<<<< HEAD
+=======
+```
+kubectl apply -f deploy/cephfs
+```
+
+* Create a CephFS Storage Class
+
+Replace Ceph monitor's IP in [examples/cephfs/class.yaml](class.yaml) with your own and create storage class:
+
+```bash
+kubectl create -f examples/cephfs/class.yaml
+```
+
+* Create a claim
+
+>>>>>>> 7df8ffd39d01d7dd72b5f79d259e3e8d9c4ad44d
 ```bash
 kubectl apply -f deploy/k8s-cephfs-provisioner.yaml
 kubectl apply -f deploy/k8s-cephfs-storageclass.yaml
@@ -46,5 +63,10 @@ kubectl apply -f deploy/k8s-cephfs-storageclass.yaml
 * Create a Pod with the claim
 
 ```bash
+<<<<<<< HEAD
 kubectl create -f examples/test-cephfs-pod.yaml
 ```
+=======
+kubectl create -f examples/cephfs/test-pod.yaml
+```
+>>>>>>> 7df8ffd39d01d7dd72b5f79d259e3e8d9c4ad44d

@@ -16,7 +16,20 @@ ceph    osd pool    application enable  kube    rbd
 ceph   auth get-or-create client.kube mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=kube' -o /etc/ceph/ceph.client.kube.keyring
 ```
 
+<<<<<<< HEAD
 * Create secrets and StorageClass kubectl file
+=======
+* Install with RBAC roles
+
+```
+kubectl apply -f deploy/rbd
+```
+
+* Create a RBD Storage Class
+
+Replace Ceph monitor's IP in [examples/rbd/class.yaml](class.yaml) with your own and create storage class:
+
+>>>>>>> 7df8ffd39d01d7dd72b5f79d259e3e8d9c4ad44d
 ```bash
 cat > deploy/k8s-rbd-storageclass.yaml <<EOF
 ---
