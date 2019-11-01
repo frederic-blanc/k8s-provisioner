@@ -15,6 +15,11 @@ Make the container images and push to the registry
 
 ```make push```
 
+## Install
+
+see [DEPLOY_CEPHFS.md](https://github.com/frederic-blanc/k8s-provisioner/blob/master/ceph/DEPLOY_CEPHFS.md) for cephfs installation
+see [DEPLOY_RBD.md](https://github.com/frederic-blanc/k8s-provisioner/blob/master/ceph/DEPLOY_RBD.md) for rbd installation
+
 ## Known limitations
 
 * Kernel CephFS doesn't work with SELinux, setting SELinux label in Pod's securityContext will not work.
