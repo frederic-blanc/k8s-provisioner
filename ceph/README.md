@@ -21,7 +21,7 @@ See [DEPLOY_CEPHFS.md](https://github.com/frederic-blanc/k8s-provisioner/blob/ma
 
 ## Known limitations
 * On CephRBD Persistent Volumes are limited to 4Gi on rpi because of rbd-nbd module usage instead of rbd one
-* CephFS provisioner does nnot work, keep working on it
+* CephFS provisioner does not work, keep working on it
 * ~~Kernel CephFS doesn't work with SELinux, setting SELinux label in Pod's securityContext will not work.~~
 * ~~Kernel CephFS doesn't support quota or capacity, capacity requested by PVC is not enforced or validated.~~
 * ~~Currently each Ceph user created by the provisioner has `allow r` MDS cap to permit CephFS mount.~~
