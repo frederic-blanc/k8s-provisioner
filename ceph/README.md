@@ -17,8 +17,7 @@ Make the container images and push to the registry
 
 ## Install
 
-see [DEPLOY_CEPHFS.md](https://github.com/frederic-blanc/k8s-provisioner/blob/master/ceph/DEPLOY_CEPHFS.md) for cephfs installation
-see [DEPLOY_RBD.md](https://github.com/frederic-blanc/k8s-provisioner/blob/master/ceph/DEPLOY_RBD.md) for rbd installation
+See [DEPLOY_CEPHFS.md](https://github.com/frederic-blanc/k8s-provisioner/blob/master/ceph/DEPLOY_CEPHFS.md) for cephfs installation, and see [DEPLOY_RBD.md](https://github.com/frederic-blanc/k8s-provisioner/blob/master/ceph/DEPLOY_RBD.md) for rbd 
 
 ## Known limitations
 
