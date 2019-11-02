@@ -18,9 +18,6 @@ ceph   auth get-or-create client.kube mon 'allow r' osd 'allow class-read object
 
 * Create a RBD Storage Class
 
-Replace Ceph monitor's IP in [examples/rbd/class.yaml](class.yaml) with your own and create storage class:
-
->>>>>>> 7df8ffd39d01d7dd72b5f79d259e3e8d9c4ad44d
 ```bash
 cat > deploy/k8s-rbd-storageclass.yaml <<EOF
 ---
